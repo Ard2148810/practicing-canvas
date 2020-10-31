@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zadanie 2</title>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script>
+        let c = document.getElementById("myCanvas");
+        let ctx = c.getContext("2d");
+        ctx.beginPath();
+        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgb(0, 255, 0)';
+        ctx.fill();
+        ctx.stroke();
+
+
+        let start;
+
+        function animate(timestamp) {
+            if(start === undefined) {
+                start = timestamp;
+            }
+            const elapsed = (timestamp - start);
+            const animationCompletion = elapsed % 1000 / 1000;
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.fillStyle =
+                `rgb(0, ${Math.max(255 - (255 * animationCompletion), 0)},
+                ${Math.min((255 * animationCompletion), 255)})`;
+            ctx.fill();
+            window.requestAnimationFrame(animate)
+        }
+        window.requestAnimationFrame(animate);
+
+    </script>
+</body>
+</html>

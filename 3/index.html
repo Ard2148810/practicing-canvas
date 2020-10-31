@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas id="myCanvas" width="1024px" height="768" style="border: 1px solid black"></canvas>
+<script>
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+
+    let start;
+
+    const step = {
+        width: 100,
+        height: 100,
+        amount: 5
+    }
+    let ball = {
+        x: 535,
+        y: canvas.height - 800,
+        radius: 50,
+        speedX: -0.8,
+        speedY: 0,
+        color: "#009ec4"
+    }
+    const gravity = 0.1
+    const bounce = 0.8
+
+    let collisionCounter = 0
+    const collisions = 5
+    function collided(object) {
+        if(collisionCounter < 5) {
+            if(object.y > canvas.height - object.radius * 2 - (collisions - collisionCounter) * step.height) {
+                collisionCounter++
+                return true
+            }
+        }
+        return false
+    }
+
+    function updateBall(ball) {
+        ball.x += ball.speedX
+        ball.y += ball.speedY
+        ball.speedY += gravity
+
+        if(collided(ball)) {
+            ball.speedY *= -bounce
+        }
+
+        ctx.beginPath()
+        ctx.arc(ball.x + ball.radius, ball.y + ball.radius, ball.radius, 0, 2 * Math.PI)
+        ctx.fillStyle = ball.color
+        ctx.fill()
+    }
+
+
+    function animate(timestamp) {
+        if(start === undefined) {
+            start = timestamp
+        }
+        const elapsed = (timestamp - start);
+        const elapsedSeconds = Math.floor(elapsed / 1000)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#723535"
+        for(let i = 1; i <= Math.min(step.amount, elapsedSeconds); i++) {
+            ctx.fillRect((step.width * i), canvas.height, step.width, step.height * -i)
+        }
+        if(elapsedSeconds > 5) {
+            updateBall(ball)
+        }
+
+        window.requestAnimationFrame(animate);
+    }
+    window.requestAnimationFrame(animate);
+
+</script>
+</body>
+</html>
