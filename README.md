@@ -1,4 +1,4 @@
 # practicing-canvas
-Practicing HTML Canvas
+Practicing HTML Canvas, no framework
 
 Each exercice is completed in a limited amount of time, so the code can be messy
