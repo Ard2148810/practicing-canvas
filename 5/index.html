@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+</head>
+<body>
+<canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
+<script>
+    class Object {
+        constructor() {
+            this.position = {
+                x: 0,
+                y: 0
+            }
+        }
+
+        setPosition(x, y) {
+            if(x !== undefined) this.position.x = x
+            if(y !== undefined) this.position.y = y
+        }
+    }
+
+    class Player extends Object {
+        constructor(posX, posY) {
+            super()
+            this.speed = 5
+            this.img = new Image()
+            this.img.src = "car.png"
+            this.size = {
+                x: 50,
+                y: 100
+            }
+            this.setPosition(posX, posY)
+        }
+
+        move(directionX, mapWidth) {
+            let clampedPositionX = Math.min(this.position.x + (this.speed * directionX), mapWidth - this.size.x)
+            clampedPositionX = Math.max(clampedPositionX, 0)
+            this.setPosition(clampedPositionX, this.position.y)
+        }
+
+    }
+
+    class Obstacle extends Object {
+        constructor(posX, posY) {
+            super();
+            this.color = "#181818"
+            this.size = {
+                x: 100,
+                y: 10
+            }
+            this.setPosition(posX, posY)
+        }
+    }
+
+    class Box extends Object {
+        constructor(posX, posY) {
+            super();
+            this.color = "#43a8ff"
+            this.size = {
+                x: 40,
+                y: 40
+            }
+            this.setPosition(posX, posY)
+        }
+    }
+
+    class RoadObject extends Object {
+        constructor(posX, posY, sizeX, sizeY, color) {
+            super();
+            this.setPosition(posX, posY)
+            this.color = color
+            this.size = {
+                x: sizeX,
+                y: sizeY
+            }
+        }
+    }
+
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+
+    let start;
+
+    const player1 = new Player(100, 495)
+
+    const userInput = {
+        directionX: 0
+    }
+
+    const handleKeyDown = (event) => {
+        switch (event.key) {
+            case "ArrowRight": {
+                event.preventDefault()
+                userInput.directionX = 1
+                break
+            }
+            case "ArrowLeft": {
+                event.preventDefault()
+                userInput.directionX = -1
+                break
+            }
+            case " ": {
+                event.preventDefault()
+                userInput.shooting = true
+                break
+            }
+        }
+    }
+
+    const handleKeyUp = (event) => {
+        event.preventDefault()
+        switch (event.key) {
+            case "ArrowRight": {
+                userInput.directionX = 0
+                break
+            }
+            case "ArrowLeft": {
+                userInput.directionX = 0
+                break
+            }
+            case " ": {
+                userInput.shooting = false
+                break
+            }
+        }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp)
+
+    function updatePlayer(player) {
+        player.move(userInput.directionX, canvas.width)
+
+        ctx.beginPath()
+        ctx.drawImage(player.img, player.position.x, player.position.y)
+    }
+
+    score = 0
+
+    function isInRange(value, a, b) {
+        return value >= a && value <= b
+    }
+
+    function isOverlapping(object, target) {
+        return target.position.y + target.size.y > object.position.y &&
+            (isInRange(target.position.x, object.position.x, object.position.x + object.size.x) ||
+                isInRange(target.position.x + object.size.x, object.position.x, object.position.x + object.size.x))
+    }
+
+    function randomRoadX() {
+        return Math.random() * (canvas.width - 125) + 25
+    }
+
+    let box = new Box(randomRoadX(), 100)
+
+    let obstacle = new Obstacle(randomRoadX(), -20)
+
+    let roadObjects = new Set()
+    const roadOffset = 50
+
+    let gameOver = false
+
+    for(let i = 0; i < 32; i++) {
+        const currentColor = i % 2 === 0 ? "#ee0000" : "#ffffff"
+        roadObjects.add(new RoadObject(roadOffset, i * 40, 40, 40, currentColor))
+        roadObjects.add(new RoadObject(canvas.width - roadOffset - 40, i * 40, 40, 40, currentColor))
+    }
+    for(let i = 0; i < 6; i++) {
+        roadObjects.add(new RoadObject(canvas.width / 2 - 8, i * 110, 16, 50, "#eeeeee"))
+    }
+
+    function updateRoad(speed) {
+        roadObjects.forEach(object => {
+            const newPosY = object.position.y > canvas.height ?
+                object.position.y - canvas.height - object.size.y : object.position.y
+            object.setPosition(object.setPosition(object.position.x, newPosY + speed))
+
+            ctx.beginPath()
+            ctx.fillStyle = object.color
+            ctx.fillRect(object.position.x, object.position.y, object.size.x, object.size.y)
+        })
+    }
+
+    function updateObstacle(obstacle, speed) {
+        if(isOverlapping(player1, obstacle)) {
+            gameOver = true
+        }
+        if(obstacle.position.y > canvas.height) {
+            obstacle.setPosition(randomRoadX(), -obstacle.size.y)
+        } else {
+            obstacle.setPosition(obstacle.position.x, obstacle.position.y + speed)
+        }
+        ctx.beginPath()
+        ctx.fillStyle = obstacle.color
+        ctx.fillRect(obstacle.position.x, obstacle.position.y, obstacle.size.x, obstacle.size.y)
+    }
+
+    function updateBox(box, speed) {
+        if(isOverlapping(player1, box)) {
+            score++
+            box.setPosition(randomRoadX(), -box.size.y)
+        }
+        if(box.position.y > canvas.height) {
+            box.setPosition(randomRoadX(), -box.size.y)
+        } else {
+            box.setPosition(box.position.x, box.position.y + speed)
+        }
+        ctx.beginPath()
+        ctx.fillStyle = box.color
+        ctx.fillRect(box.position.x, box.position.y, box.size.x, box.size.y)
+    }
+
+    function updateScore(score) {
+        ctx.font = "30px Arial"
+        ctx.fillStyle = "#000000"
+        ctx.fillText(`Score: ${score}`, 10, 30)
+    }
+
+    function printGameOver(msg) {
+        ctx.font = "40px Arial"
+        ctx.strokeText(msg, canvas.width / 2 - 200, canvas.height / 2)
+    }
+
+    function animate(timestamp) {
+        if(start === undefined) {
+            start = timestamp
+        }
+        const elapsed = (timestamp - start);
+        const elapsedSeconds = Math.floor(elapsed / 1000)
+        const speed = 3
+        if(gameOver) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "#FF0000"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            printGameOver(`GAME OVER! SCORE: ${score}`)
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.beginPath()
+            ctx.fillStyle = "#6bb635"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "#8e8e8e"
+            ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height)
+            updateRoad(speed)
+            updateObstacle(obstacle, speed)
+            updateBox(box, speed)
+            updatePlayer(player1)
+            updateScore(score)
+        }
+
+
+        window.requestAnimationFrame(animate);
+    }
+    window.requestAnimationFrame(animate);
+
+</script>
+</body>
+</html>
