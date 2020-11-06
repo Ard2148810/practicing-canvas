@@ -14,20 +14,20 @@
 <body>
 <div>
     <canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
-    <div style="display: flex; max-width: 802px">
+    <div style="display: flex">
         <button
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
-                ontouchstart="event => {event.preventDefault();turnLeft()}"
-                ontouchend="event => {event.preventDefault();stopTurning()"><</button>
+                ontouchstart="turnLeft()"
+                ontouchend="stopTurning()"><</button>
         <button
                 onmousedown="shoot()"
-                ontouchstart="event => {event.preventDefault();shoot()">SHOOT</button>
+                ontouchstart="shoot()">SHOOT</button>
         <button
                 onmousedown="turnRight()"
                 onmouseup="stopTurning()"
-                ontouchstart="event => {event.preventDefault();turnRight()"
-                ontouchend="event => {event.preventDefault();stopTurning()">></button>
+                ontouchstart="turnRight()"
+                ontouchend="stopTurning()">></button>
     </div>
 </div>
 
