@@ -18,16 +18,16 @@
         <button
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
-                ontouchstart="turnLeft()"
-                ontouchend="stopTurning()"><</button>
+                ontouchstart="event => {event.preventDefault();turnLeft()}"
+                ontouchend="event => {event.preventDefault();stopTurning()"><</button>
         <button
                 onmousedown="shoot()"
-                ontouchstart="shoot()">SHOOT</button>
+                ontouchstart="event => {event.preventDefault();shoot()">SHOOT</button>
         <button
                 onmousedown="turnRight()"
                 onmouseup="stopTurning()"
-                ontouchstart="turnRight()"
-                ontouchend="stopTurning()">></button>
+                ontouchstart="event => {event.preventDefault();turnRight()"
+                ontouchend="event => {event.preventDefault();stopTurning()">></button>
     </div>
 </div>
 
