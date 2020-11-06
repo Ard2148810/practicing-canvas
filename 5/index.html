@@ -20,7 +20,9 @@
                 onmouseup="stopTurning()"
                 ontouchstart="turnLeft()"
                 ontouchend="stopTurning()"><</button>
-        <button onclick="shoot()">SHOOT</button>
+        <button
+                onmousedown="shoot()"
+                ontouchstart="shoot()">SHOOT</button>
         <button
                 onmousedown="turnRight()"
                 onmouseup="stopTurning()"
@@ -193,7 +195,7 @@
             }
             case " ": {
                 event.preventDefault()
-                userInput.shooting = true
+                shoot()
                 break
             }
             case "ArrowUp": {
@@ -219,7 +221,7 @@
                 break
             }
             case " ": {
-                userInput.shooting = false
+                stopShooting()
                 break
             }
             case "ArrowUp": {
@@ -283,9 +285,9 @@
     }
 
     function updatePlayer(player) {
-        if(userInput.shooting) {
+        if(userInput.isShooting) {
             player.shoot(bullets)
-            userInput.shooting = false
+            stopShooting()
         }
 
         player.move(userInput.directionX, canvas.width)
