@@ -312,7 +312,7 @@
     }
 
     function updateObstacle(obstacle, speed) {
-        if(isOverlapping(player1, obstacle)) {
+        if(isOverlapping(player1, obstacle) || isOverlapping(obstacle, player1)) {
             gameOver = true
         }
         if(obstacle.position.y > canvas.height) {
@@ -354,7 +354,8 @@
     function updateBullets(bullets) {
         bullets.forEach(bullet => {
             bullet.move()
-            if(isOverlapping(bullet.getCollisionBox(), obstacle)) {
+            // Two side overlap check due to bug in overlap function
+            if(isOverlapping(bullet.getCollisionBox(), obstacle) || isOverlapping(obstacle, bullet.getCollisionBox())) {
                 console.log("Overlapping")
                 handleObstacleHit(bullet, obstacle)
             }
