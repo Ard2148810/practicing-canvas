@@ -14,7 +14,7 @@
 <body>
 <div>
     <canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
-    <div style="display: flex">
+    <div style="display: flex; max-width: 802px">
         <button
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
@@ -110,7 +110,8 @@
     const player1 = new Player(100, 495)
 
     const userInput = {
-        directionX: 0
+        directionX: 0,
+        acceleration: 0
     }
 
     const turnLeft = () => {
@@ -123,6 +124,18 @@
 
     const stopTurning = () => {
         userInput.directionX = 0
+    }
+
+    const accelerate = () => {
+        userInput.acceleration = 1
+    }
+
+    const stopAcceleration = () => {
+        userInput.acceleration = 0
+    }
+
+    const decelerate = () => {
+        userInput.acceleration = -1
     }
 
     const handleKeyDown = (event) => {
@@ -142,6 +155,14 @@
                 userInput.shooting = true
                 break
             }
+            case "ArrowUp": {
+                accelerate()
+                break
+            }
+            case "ArrowDown": {
+                decelerate()
+                break
+            }
         }
     }
 
@@ -149,15 +170,23 @@
         event.preventDefault()
         switch (event.key) {
             case "ArrowRight": {
-                userInput.directionX = 0
+                stopTurning()
                 break
             }
             case "ArrowLeft": {
-                userInput.directionX = 0
+                stopTurning()
                 break
             }
             case " ": {
                 userInput.shooting = false
+                break
+            }
+            case "ArrowUp": {
+                stopAcceleration()
+                break
+            }
+            case "ArrowDown": {
+                stopAcceleration()
                 break
             }
         }
@@ -196,6 +225,10 @@
     let roadObjects = new Set()
     const roadOffset = 50
 
+    let speed = 3
+    let minSpeed = 1.5
+    let maxSpeed = 5
+
     let gameOver = false
 
     for(let i = 0; i < 32; i++) {
@@ -217,6 +250,11 @@
             ctx.fillStyle = object.color
             ctx.fillRect(object.position.x, object.position.y, object.size.x, object.size.y)
         })
+    }
+
+    function updateSpeed(speed, minSpeed, maxSpeed, acceleration) {
+        speed += acceleration * 0.05
+        return Math.min(Math.max(minSpeed, speed), maxSpeed)
     }
 
     function updateObstacle(obstacle, speed) {
@@ -265,7 +303,6 @@
         }
         const elapsed = (timestamp - start);
         const elapsedSeconds = Math.floor(elapsed / 1000)
-        const speed = 3
         if(gameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             ctx.fillStyle = "#FF0000"
@@ -277,7 +314,9 @@
             ctx.fillStyle = "#6bb635"
             ctx.fillRect(0, 0, canvas.width, canvas.height)
             ctx.fillStyle = "#8e8e8e"
+            ctx.fillStyle = "#8e8e8e"
             ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height)
+            speed = updateSpeed(speed, minSpeed, maxSpeed, userInput.acceleration)
             updateRoad(speed)
             updateObstacle(obstacle, speed)
             updateBox(box, speed)
