@@ -31,7 +31,7 @@
 
 
 <script>
-    class Object {
+    class GameObject {
         constructor() {
             this.position = {
                 x: 0,
@@ -45,7 +45,7 @@
         }
     }
 
-    class Player extends Object {
+    class Player extends GameObject {
         constructor(posX, posY) {
             super()
             this.speed = 5
@@ -64,9 +64,14 @@
             this.setPosition(clampedPositionX, this.position.y)
         }
 
+        shoot(bullets) {
+            bullets.add(
+                new Bullet(this.position.x + (this.size.x / 2), this.position.y - (this.size.y / 2))
+            )
+        }
     }
 
-    class Obstacle extends Object {
+    class Obstacle extends GameObject {
         constructor(posX, posY) {
             super();
             this.color = "#181818"
@@ -78,7 +83,7 @@
         }
     }
 
-    class Box extends Object {
+    class Box extends GameObject {
         constructor(posX, posY) {
             super();
             this.color = "#43a8ff"
@@ -90,7 +95,7 @@
         }
     }
 
-    class RoadObject extends Object {
+    class RoadObject extends GameObject {
         constructor(posX, posY, sizeX, sizeY, color) {
             super();
             this.setPosition(posX, posY)
@@ -99,6 +104,33 @@
                 x: sizeX,
                 y: sizeY
             }
+        }
+    }
+
+    class Bullet extends GameObject {
+        constructor(posX, posY) {
+            super();
+            this.setPosition(posX, posY)
+            this.speed = 8
+            this.radius = 10
+            this.color = "#000000"
+        }
+
+        getCollisionBox() {
+            return {
+                position: {
+                    x: this.position.x,
+                    y: this.position.y
+                },
+                size: {
+                    x: this.radius * 2,
+                    y: this.radius * 2
+                }
+            }
+        }
+
+        move() {
+            this.setPosition(this.position.x, this.position.y - this.speed)
         }
     }
 
@@ -111,7 +143,8 @@
 
     const userInput = {
         directionX: 0,
-        acceleration: 0
+        acceleration: 0,
+        isShooting: false
     }
 
     const turnLeft = () => {
@@ -136,6 +169,14 @@
 
     const decelerate = () => {
         userInput.acceleration = -1
+    }
+
+    const shoot = () => {
+        userInput.isShooting = true
+    }
+
+    const stopShooting = () => {
+        userInput.isShooting = false
     }
 
     const handleKeyDown = (event) => {
@@ -195,12 +236,6 @@
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
 
-    function updatePlayer(player) {
-        player.move(userInput.directionX, canvas.width)
-
-        ctx.beginPath()
-        ctx.drawImage(player.img, player.position.x, player.position.y)
-    }
 
     score = 0
 
@@ -209,9 +244,14 @@
     }
 
     function isOverlapping(object, target) {
-        return target.position.y + target.size.y > object.position.y &&
-            (isInRange(target.position.x, object.position.x, object.position.x + object.size.x) ||
-                isInRange(target.position.x + object.size.x, object.position.x, object.position.x + object.size.x))
+        return (
+                isInRange(target.position.y, object.position.y, object.position.y + object.size.y) ||
+                isInRange(target.position.y + target.size.y, object.position.y, object.position.y + object.size.y)
+            ) &&
+            (
+                isInRange(target.position.x, object.position.x, object.position.x + object.size.x) ||
+                isInRange(target.position.x + target.size.x, object.position.x, object.position.x + object.size.x)
+            )
     }
 
     function randomRoadX() {
@@ -229,6 +269,8 @@
     let minSpeed = 1.5
     let maxSpeed = 5
 
+    bullets = new Set()
+
     let gameOver = false
 
     for(let i = 0; i < 32; i++) {
@@ -238,6 +280,18 @@
     }
     for(let i = 0; i < 6; i++) {
         roadObjects.add(new RoadObject(canvas.width / 2 - 8, i * 110, 16, 50, "#eeeeee"))
+    }
+
+    function updatePlayer(player) {
+        if(userInput.shooting) {
+            player.shoot(bullets)
+            userInput.shooting = false
+        }
+
+        player.move(userInput.directionX, canvas.width)
+
+        ctx.beginPath()
+        ctx.drawImage(player.img, player.position.x, player.position.y)
     }
 
     function updateRoad(speed) {
@@ -297,6 +351,26 @@
         ctx.strokeText(msg, canvas.width / 2 - 200, canvas.height / 2)
     }
 
+    function updateBullets(bullets) {
+        bullets.forEach(bullet => {
+            bullet.move()
+            if(isOverlapping(bullet.getCollisionBox(), obstacle)) {
+                console.log("Overlapping")
+                handleObstacleHit(bullet, obstacle)
+            }
+
+            ctx.beginPath()
+            ctx.fillStyle = bullet.color
+            ctx.arc(bullet.position.x, bullet.position.y, bullet.radius, 0, 2 * Math.PI)
+            ctx.fill()
+        })
+    }
+
+    function handleObstacleHit(bullet) {
+        bullets.delete(bullet)
+        obstacle.setPosition(randomRoadX(), -obstacle.size.y)
+    }
+
     function animate(timestamp) {
         if(start === undefined) {
             start = timestamp
@@ -320,6 +394,7 @@
             updateRoad(speed)
             updateObstacle(obstacle, speed)
             updateBox(box, speed)
+            updateBullets(bullets)
             updatePlayer(player1)
             updateScore(score)
         }
