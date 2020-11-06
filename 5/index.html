@@ -5,8 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
 </head>
+<style>
+    button {
+        flex: 1;
+        padding: 20px;
+    }
+</style>
 <body>
-<canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
+<div>
+    <canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
+    <div style="display: flex">
+        <button onmousedown="turnLeft()" onmouseup="stopTurning()"><</button>
+        <button onclick="shoot()">SHOOT</button>
+        <button onmousedown="turnRight()" onmouseup="stopTurning()">></button>
+    </div>
+</div>
+
+
 <script>
     class Object {
         constructor() {
@@ -90,16 +105,28 @@
         directionX: 0
     }
 
+    const turnLeft = () => {
+        userInput.directionX = -1
+    }
+
+    const turnRight = () => {
+        userInput.directionX = 1
+    }
+
+    const stopTurning = () => {
+        userInput.directionX = 0
+    }
+
     const handleKeyDown = (event) => {
         switch (event.key) {
             case "ArrowRight": {
                 event.preventDefault()
-                userInput.directionX = 1
+                turnRight()
                 break
             }
             case "ArrowLeft": {
                 event.preventDefault()
-                userInput.directionX = -1
+                turnLeft()
                 break
             }
             case " ": {
