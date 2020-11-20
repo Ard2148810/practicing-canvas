@@ -253,38 +253,38 @@
     }
 
     const handleKeyUp = (event) => {
-        event.preventDefault()
+        event.preventDefault();
         switch (event.key) {
             case "ArrowRight": {
-                stopTurning()
-                break
+                stopTurning();
+                break;
             }
             case "ArrowLeft": {
-                stopTurning()
-                break
+                stopTurning();
+                break;
             }
             case " ": {
-                stopShooting()
-                break
+                stopShooting();
+                break;
             }
             case "ArrowUp": {
-                stopAcceleration()
-                break
+                stopAcceleration();
+                break;
             }
             case "ArrowDown": {
-                stopAcceleration()
-                break
+                stopAcceleration();
+                break;
             }
         }
     }
 
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('keyup', handleKeyUp)
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
 
-    score = 0
+    score = 0;
 
     function isInRange(value, a, b) {
-        return value >= a && value <= b
+        return value >= a && value <= b;
     }
 
     function isOverlapping(object, target) {
@@ -295,22 +295,22 @@
             (
                 isInRange(target.position.x, object.position.x, object.position.x + object.size.x) ||
                 isInRange(target.position.x + target.size.x, object.position.x, object.position.x + object.size.x)
-            )
+            );
     }
 
     function randomRoadX() {
-        return Math.random() * (canvas.width - 125) + 25
+        return Math.random() * (canvas.width - 125) + 25;
     }
 
-    let box = new Box(randomRoadX(), 100)
+    let box = new Box(randomRoadX(), 100);
 
-    let obstacle = new Obstacle(randomRoadX(), -20)
+    let obstacle = new Obstacle(randomRoadX(), -20);
 
-    let roadObjects = new Set()
-    const roadOffset = 50
+    let roadObjects = new Set();
+    const roadOffset = 50;
 
-    let speed = 3
-    let minSpeed = 1.5
+    let speed = 4
+    let minSpeed = 3
     let maxSpeed = 10
 
     bullets = new Set()
@@ -374,10 +374,8 @@
             obstacle.setPosition(obstacle.position.x, obstacle.position.y + speed)
         }
         ctx.beginPath()
-        //ctx.setTransform(1, 0, calcTransform(obstacle.position.y), 1, 0, 0)
         ctx.fillStyle = obstacle.color
         ctx.fillRect(obstacle.position.x, obstacle.position.y, obstacle.size.x, obstacle.size.y)
-        //ctx.setTransform(1, 0, 0, 1, 0, 0)
     }
 
     function updateBox(box, speed) {
@@ -391,10 +389,8 @@
             box.setPosition(box.position.x, box.position.y + speed)
         }
         ctx.beginPath()
-        //ctx.setTransform(1, 0, calcTransform(box.position.y), 1, 0, 0)
-        ctx.fillStyle = box.color
-        ctx.fillRect(box.position.x, box.position.y, box.size.x, box.size.y)
-        //ctx.setTransform(1, 0, 0, 1, 0, 0)
+        ctx.fillStyle = box.color;
+        ctx.fillRect(box.position.x, box.position.y, box.size.x, box.size.y);
     }
 
     function updateScore(score) {
@@ -438,6 +434,14 @@
     }
     let turn = false
 
+    function removeOldBullets() {
+        bullets.forEach(bullet => {
+            if(bullet.position.y > 650) {
+                bullet.delete();
+            }
+        })
+    }
+
     function animate(timestamp) {
         if(start === undefined) {
             start = timestamp
@@ -450,22 +454,23 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height)
             printGameOver(`GAME OVER! SCORE: ${score}`)
         } else {
-            if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            ctx.beginPath()
-            ctx.fillStyle = "#6bb635"
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
-            ctx.fillStyle = "#8e8e8e"
-            ctx.fillStyle = "#8e8e8e"
-            ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height)
-            speed = updateSpeed(speed, minSpeed, maxSpeed, userInput.acceleration)
-            updateCurrentTransform(0.002, 0.2)
-            updateRoad(speed)
-            updateObstacle(obstacle, speed)
-            updateBox(box, speed)
-            updateBullets(bullets)
-            updatePlayer(player1)
-            updateScore(score)
+            if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.fillStyle = "#6bb635";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#8e8e8e";
+            ctx.fillStyle = "#8e8e8e";
+            ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height);
+            speed = updateSpeed(speed, minSpeed, maxSpeed, userInput.acceleration);
+            updateCurrentTransform(0.002, 0.2);
+            updateRoad(speed);
+            updateObstacle(obstacle, speed);
+            updateBox(box, speed);
+            updateBullets(bullets);
+            updatePlayer(player1);
+            updateScore(score);
+            if(elapsedSeconds % 2) removeOldBullets();
         }
         window.requestAnimationFrame(animate);
     }
