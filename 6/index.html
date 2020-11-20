@@ -24,7 +24,7 @@
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
                 ontouchstart="turnLeft()"
-                ontouchend="stopTurning()"></button>
+                ontouchend="stopTurning()"><</button>
         <button
                 onmousedown="shoot()">SHOOT</button>
         <button
@@ -247,7 +247,6 @@
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
 
-
     score = 0
 
     function isInRange(value, a, b) {
@@ -278,7 +277,7 @@
 
     let speed = 3
     let minSpeed = 1.5
-    let maxSpeed = 5
+    let maxSpeed = 10
 
     bullets = new Set()
 
@@ -297,8 +296,7 @@
     function calcTransform(posY) {
         posY = Math.max(0, posY)
         posY = Math.min(canvas.height, posY)
-        //console.log(currentTransform * (1 - (posY / canvas.height)))
-        return currentTransform * (1 - (posY / canvas.height))
+        return currentTransform * (1 - (posY / canvas.height)) * 0.3
     }
 
     function updatePlayer(player) {
@@ -381,7 +379,6 @@
             bullet.move()
             // Two side overlap check due to bug in overlap function
             if(isOverlapping(bullet.getCollisionBox(), obstacle) || isOverlapping(obstacle, bullet.getCollisionBox())) {
-                console.log("Overlapping")
                 handleObstacleHit(bullet, obstacle)
             }
 
@@ -419,7 +416,6 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height)
             printGameOver(`GAME OVER! SCORE: ${score}`)
         } else {
-            //ctx.setTransform(1, 0, 0.2, 1, 0, 0);
             if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             ctx.beginPath()
@@ -429,16 +425,13 @@
             ctx.fillStyle = "#8e8e8e"
             ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height)
             speed = updateSpeed(speed, minSpeed, maxSpeed, userInput.acceleration)
-            ctx.setTransform(1, 0, 0.2, 1, 0, 0)
             updateCurrentTransform(0.002, 0.2)
             updateRoad(speed)
             updateObstacle(obstacle, speed)
             updateBox(box, speed)
             updateBullets(bullets)
             updatePlayer(player1)
-            //ctx.setTransform(1, 0, 0, 1, 0, 0);
             updateScore(score)
-            //ctx.setTransform(1, 0, 0.2, 1, 0, 0);
         }
 
 
