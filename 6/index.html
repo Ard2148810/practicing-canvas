@@ -6,20 +6,21 @@
     <title>Title</title>
 </head>
 <style>
+    body, div {
+        margin: 0;
+        padding: 0;
+    }
+
     button {
         flex: 1;
         padding: 20px;
     }
-    .btn-left:after {
-        content: "<";
-    }
 </style>
 <body>
 <div>
-    <canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
     <div style="display: flex">
         <button
-                class="btn-left"
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
                 ontouchstart="turnLeft()"
@@ -36,6 +37,11 @@
 
 
 <script>
+    // Prevent context menu on button press and hold activity
+    document.querySelectorAll('button').forEach(element => {
+        element.addEventListener('contextmenu', event => event.preventDefault());
+    });
+
     class GameObject {
         constructor() {
             this.position = {
