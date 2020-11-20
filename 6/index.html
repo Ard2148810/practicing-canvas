@@ -12,26 +12,48 @@
     }
 
     button {
-        flex: 1;
+        margin: auto;
         padding: 20px;
+        min-width: 150px;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #bdbdbd;
+    }
+    .grid-item {
+        /*padding: 20px;*/
+        /*font-size: 30px;*/
+        text-align: center;
     }
 </style>
 <body>
 <div>
     <canvas id="myCanvas" width="800" height="600"></canvas>
-    <div style="display: flex">
-        <button
+    <div class="grid-container">
+        <div class="grid-item"></div>
+        <div class="grid-item"><button>^</button></div>
+        <div class="grid-item"></div>
+        <div class="grid-item">
+            <button
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
                 ontouchstart="turnLeft()"
                 ontouchend="stopTurning()"><</button>
-        <button
-                onmousedown="shoot()">SHOOT</button>
-        <button
-                onmousedown="turnRight()"
-                onmouseup="stopTurning()"
-                ontouchstart="turnRight()"
-                ontouchend="stopTurning()">></button>
+        </div>
+        <div class="grid-item">
+            <button ontouchstart="shoot()">SHOOT</button>
+        </div>
+        <div class="grid-item">
+            <button
+                    onmousedown="turnRight()"
+                    onmouseup="stopTurning()"
+                    ontouchstart="turnRight()"
+                    ontouchend="stopTurning()">></button>
+        </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"><button>v</button></div>
+        <div class="grid-item"></div>
     </div>
 </div>
 
@@ -433,8 +455,6 @@
             updatePlayer(player1)
             updateScore(score)
         }
-
-
         window.requestAnimationFrame(animate);
     }
     window.requestAnimationFrame(animate);
