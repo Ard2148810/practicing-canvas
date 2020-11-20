@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=800">
     <title>Title</title>
 </head>
 <style>
@@ -10,16 +10,20 @@
         flex: 1;
         padding: 20px;
     }
+    .btn-left:after {
+        content: "<";
+    }
 </style>
 <body>
 <div>
     <canvas id="myCanvas" width="800" height="600" style="border: 1px solid black"></canvas>
     <div style="display: flex">
         <button
+                class="btn-left"
                 onmousedown="turnLeft()"
                 onmouseup="stopTurning()"
                 ontouchstart="turnLeft()"
-                ontouchend="stopTurning()"><</button>
+                ontouchend="stopTurning()"></button>
         <button
                 onmousedown="shoot()">SHOOT</button>
         <button
