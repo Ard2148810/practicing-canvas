@@ -32,7 +32,14 @@
     <canvas id="myCanvas" width="800" height="600"></canvas>
     <div class="grid-container">
         <div class="grid-item"></div>
-        <div class="grid-item"><button>^</button></div>
+        <div class="grid-item">
+            <button
+                    ontouchstart="accelerate()"
+                    ontouchend="stopAcceleration()"
+                    onmousedown="accelerate()"
+                    onmouseup="stopAcceleration()"
+            >^</button>
+        </div>
         <div class="grid-item"></div>
         <div class="grid-item">
             <button
@@ -52,7 +59,12 @@
                     ontouchend="stopTurning()">></button>
         </div>
         <div class="grid-item"></div>
-        <div class="grid-item"><button>v</button></div>
+        <div class="grid-item">
+            <button
+                    ontouchstart="decelerate()"
+                    ontouchend="stopAcceleration()"
+                    onmousedown="decelerate()"
+                    onmouseup="stopAcceleration()">v</button></div>
         <div class="grid-item"></div>
     </div>
 </div>
