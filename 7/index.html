@@ -458,7 +458,7 @@
     function handleOrientation(event) {
         orientX = event.beta;
         orientY = event.gamma;
-        printToScreen(orientX);
+        printToScreen(`o:${orientX}`);
     }
 
     window.addEventListener('deviceorientation', handleOrientation, true);
@@ -492,7 +492,6 @@
             updatePlayer(player1);
             updateScore(score);
             if(elapsedSeconds % 2) removeOldBullets();
-            printToScreen(orientX)
         }
         window.requestAnimationFrame(animate);
     }
