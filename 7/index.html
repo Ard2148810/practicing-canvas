@@ -458,7 +458,6 @@
     function handleOrientation(event) {
         orientX = event.beta;
         orientY = event.gamma;
-        printToScreen(`1:${event.gamma.valueOf()};2:${event.gamma};3:${event.acceleration.x};`);
     }
 
     window.addEventListener('deviceorientation', handleOrientation, true);
@@ -492,6 +491,7 @@
             updatePlayer(player1);
             updateScore(score);
             if(elapsedSeconds % 2) removeOldBullets();
+            printToScreen(`1:${event.gamma.valueOf()};2:${event.gamma};3:${event.acceleration.x};`);
         }
         window.requestAnimationFrame(animate);
     }
