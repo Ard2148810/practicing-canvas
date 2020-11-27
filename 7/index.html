@@ -458,7 +458,7 @@
     function handleOrientation(event) {
         orientX = event.beta;
         orientY = event.gamma;
-        printToScreen(`o:${orientX}`);
+        printToScreen(`o:${event}`);
     }
 
     window.addEventListener('deviceorientation', handleOrientation, true);
