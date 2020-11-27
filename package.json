@@ -1,0 +1,22 @@
+{
+  "name": "practicing-canvas",
+  "version": "1.0.0",
+  "description": "Practicing HTML Canvas, no framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ard2148810/practicing-canvas.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ard2148810/practicing-canvas/issues"
+  },
+  "homepage": "https://github.com/Ard2148810/practicing-canvas#readme",
+  "devDependencies": {
+    "local-web-server": "^4.2.1"
+  }
+}
