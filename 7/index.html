@@ -30,7 +30,7 @@
 <body>
 <div>
     <canvas id="myCanvas" width="800" height="600"></canvas>
-    <div id="myConsole">test</div>
+    <pre id="myConsole">test</pre>
     <div class="grid-container">
         <div class="grid-item"></div>
         <div class="grid-item">
@@ -455,13 +455,13 @@
     }
     let orientX = 0;
     let orientY = 0;
-    let test = 0;
+    let test1 = 0;
     let test2 = 0;
     function handleOrientation(event) {
         orientX = event.beta;
         orientY = event.gamma;
-        test = event.acceleration.x;
-        test = event.acceleration;
+        test1 = event.acceleration.x;
+        test2 = event.acceleration.y;
     }
 
     window.addEventListener('deviceorientation', handleOrientation, true);
@@ -495,7 +495,7 @@
             updatePlayer(player1);
             updateScore(score);
             if(elapsedSeconds % 2) removeOldBullets();
-            printToScreen(`1:${orientX};2:${orientY};3:${test};4:${test2}`);
+            printToScreen(`1:${orientX};\n2:${orientY}\n3:${test1};\n4:${test2}`);
         }
         window.requestAnimationFrame(animate);
     }
