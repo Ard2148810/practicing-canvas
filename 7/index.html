@@ -30,6 +30,7 @@
 <body>
 <div>
     <canvas id="myCanvas" width="800" height="600"></canvas>
+    <div id="myConsole">test</div>
     <div class="grid-container">
         <div class="grid-item"></div>
         <div class="grid-item">
@@ -71,6 +72,10 @@
 
 
 <script>
+    const myConsole = document.getElementById('myConsole');
+    printToScreen = (msg) => {
+        myConsole.innerHTML = msg;
+    }
     // Prevent context menu on button press and hold activity
     document.querySelectorAll('button').forEach(element => {
         element.addEventListener('contextmenu', event => event.preventDefault());
@@ -223,6 +228,12 @@
     const stopShooting = () => {
         userInput.isShooting = false
     }
+
+    window.addEventListener('devicemotion', (event) => {
+        printToScreen(event.acceleration.x + ' m/s2');
+        myConsole.style.backgroundColor="#FF0000";
+    });
+
 
     const handleKeyDown = (event) => {
         switch (event.key) {
