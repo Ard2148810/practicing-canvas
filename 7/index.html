@@ -459,7 +459,7 @@
     function handleOrientation(event) {
         orientX = event.beta;
         orientY = event.gamma;
-        test = event.beta.valueOf();
+        test = event.acceleration.x;
     }
 
     window.addEventListener('deviceorientation', handleOrientation, true);
