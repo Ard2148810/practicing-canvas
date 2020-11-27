@@ -229,10 +229,11 @@
         userInput.isShooting = false
     }
 
-    window.addEventListener('devicemotion', (event) => {
-        printToScreen(event.acceleration.x + ' m/s2');
-        myConsole.style.backgroundColor="#FF0000";
-    });
+    printToScreen("works");
+
+
+
+
 
 
     const handleKeyDown = (event) => {
@@ -452,6 +453,15 @@
             }
         })
     }
+    let orientX = 0;
+    let orientY = 0;
+    function handleOrientation(event) {
+        orientX = event.beta;
+        orientY = event.gamma;
+        printToScreen(orientX);
+    }
+
+    window.addEventListener('deviceorientation', handleOrientation, true);
 
     function animate(timestamp) {
         if(start === undefined) {
@@ -482,6 +492,7 @@
             updatePlayer(player1);
             updateScore(score);
             if(elapsedSeconds % 2) removeOldBullets();
+            printToScreen(orientX)
         }
         window.requestAnimationFrame(animate);
     }
