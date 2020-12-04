@@ -353,7 +353,7 @@
 
         player.move(userInput.directionX, canvas.width)
         if(orientY !== 0) {
-            player.move(Math.min(Math.max(orientY, -20), 20), canvas.width)
+            player.move(Math.min(Math.max(orientY / 20, -1), 1), canvas.width)
         }
 
         ctx.beginPath()
