@@ -453,18 +453,21 @@
             }
         })
     }
-    let orientX = 0;
     let orientY = 0;
-    let test1 = 0;
-    let test2 = 0;
     function handleOrientation(event) {
-        orientX = event.beta;
         orientY = event.gamma;
-        test1 = event.acceleration.x;
-        test2 = event.acceleration.y;
     }
 
-    window.addEventListener('deviceorientation', handleOrientation, true);
+    function requestOrientationPermission(){
+        DeviceOrientationEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    window.addEventListener('deviceorientation', handleOrientation, true);
+                }
+            })
+            .catch(console.error);
+    }
+    requestOrientationPermission();
 
     function animate(timestamp) {
         if(start === undefined) {
@@ -495,7 +498,7 @@
             updatePlayer(player1);
             updateScore(score);
             if(elapsedSeconds % 2) removeOldBullets();
-            printToScreen(`1:${orientX};\n2:${orientY}\n3:${test1};\n4:${test2}`);
+            printToScreen(`r:${orientY}`);
         }
         window.requestAnimationFrame(animate);
     }
