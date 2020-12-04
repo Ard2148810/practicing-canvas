@@ -352,6 +352,9 @@
         }
 
         player.move(userInput.directionX, canvas.width)
+        if(orientY !== 0) {
+            player.move(Math.min(Math.max(orientY, -20), 20), canvas.width)
+        }
 
         ctx.beginPath()
         ctx.drawImage(player.img, player.position.x, player.position.y)
