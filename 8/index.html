@@ -99,7 +99,7 @@
         shoot(bullets) {
             if(bullets.size < 1) {
                 bullets.add(
-                    new Bullet(this.position.x + (this.size.x / 2), this.position.y - (this.size.y / 2))
+                    new Bullet(this.position.x + (this.size.x / 2), this.position.y - (this.size.y / 2) - 10)
                 );
             }
         }
@@ -109,6 +109,8 @@
         constructor(posX, posY) {
             super();
             this.color = "#ffb0b0"
+            this.img = new Image()
+            this.img.src = "target.png"
             this.size = {
                 x: 50,
                 y: 20
@@ -145,7 +147,10 @@
         constructor(posX, posY) {
             super();
             this.setPosition(posX, posY)
-            this.speed = 8
+            this.speed = {
+                x: 0,
+                y: 8
+            }
             this.radius = 10
             this.color = "#9c6107"
         }
@@ -164,7 +169,7 @@
         }
 
         move() {
-            this.setPosition(this.position.x, this.position.y - this.speed)
+            this.setPosition(this.position.x - this.speed.x, this.position.y - this.speed.y)
         }
     }
 
@@ -281,10 +286,12 @@
 
     //let obstacle = new Obstacle(randomRoadX(), -20);
 
-    let enemies = new Set();
+    let targets = new Set();
 
-    function addEnemiesWave(offset) {
-
+    function addTargetsWave(offset) {
+        for(let i = 0; i < 16; i++) {
+            targets.add(new Obstacle(i * 50, offset));
+        }
     }
 
     //let roadObjects = new Set();
@@ -360,13 +367,27 @@
         ctx.font = "40px Arial"
         ctx.strokeText(msg, canvas.width / 2 - 200, canvas.height / 2)
     }
-
     function updateBullets(bullets) {
         bullets.forEach(bullet => {
-            bullet.move()
-            // if(isOverlapping(bullet.getCollisionBox(), obstacle) || isOverlapping(obstacle, bullet.getCollisionBox())) {
-            //     //handleObstacleHit(bullet, obstacle)
-            // }
+            bullet.move();
+            targets.forEach(target => {
+                if(isOverlapping(bullet.getCollisionBox(), target) || isOverlapping(target, bullet.getCollisionBox())) {
+                    targets.delete(target)
+                    score++;
+                }
+            });
+
+            if(isOverlapping(bullet.getCollisionBox(), player1) || isOverlapping(player1, bullet.getCollisionBox())) {
+                bullet.speed.y = Math.abs(bullet.speed.y);
+            }
+
+            if(bullet.position.y > canvas.height) {
+                gameOver = true;
+            }
+            if(bullet.position.y < 0) {
+                bullet.speed.y *= -1;
+            }
+
 
             ctx.beginPath()
             ctx.fillStyle = bullet.color
@@ -414,9 +435,18 @@
     permission();
 
     function init() {
+        addTargetsWave(30);
         setInterval(() => {
             console.log("Test");
+
         }, 5000);
+    }
+
+    function updateTargets(targets) {
+        targets.forEach(target => {
+            ctx.beginPath();
+            ctx.drawImage(target.img, target.position.x, target.position.y);
+        });
     }
 
     function animate(timestamp) {
@@ -446,6 +476,7 @@
             //updateObstacle(obstacle, speed);
             //updateBox(box, speed);
             updateBullets(bullets);
+            updateTargets(targets);
             updatePlayer(player1);
             updateScore(score);
             //if(elapsedSeconds % 2) removeOldBullets();
