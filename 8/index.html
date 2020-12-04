@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=800">
+    <meta name="viewport" content="width=800, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Title</title>
 </head>
 <style>
@@ -40,7 +40,7 @@
                     ontouchend="stopTurning()"><</button>
         </div>
         <div class="grid-item">
-            <button ontouchstart="shoot()">SHOOT</button>
+            <button ontouchstart="shoot()">START</button>
         </div>
         <div class="grid-item">
             <button
@@ -82,62 +82,64 @@
             super()
             this.speed = 5
             this.img = new Image()
-            this.img.src = "car.png"
+            this.img.src = "spaceship.png"
             this.size = {
                 x: 50,
-                y: 100
+                y: 10
             }
             this.setPosition(posX, posY)
         }
 
         move(directionX, mapWidth) {
-            let clampedPositionX = Math.min(this.position.x + (this.speed * directionX), mapWidth - this.size.x)
-            clampedPositionX = Math.max(clampedPositionX, 0)
-            this.setPosition(clampedPositionX, this.position.y)
+            let clampedPositionX = Math.min(this.position.x + (this.speed * directionX), mapWidth - this.size.x);
+            clampedPositionX = Math.max(clampedPositionX, 0);
+            this.setPosition(clampedPositionX, this.position.y);
         }
 
         shoot(bullets) {
-            bullets.add(
-                new Bullet(this.position.x + (this.size.x / 2), this.position.y - (this.size.y / 2))
-            )
+            if(bullets.size < 1) {
+                bullets.add(
+                    new Bullet(this.position.x + (this.size.x / 2), this.position.y - (this.size.y / 2))
+                );
+            }
         }
     }
 
     class Obstacle extends GameObject {
         constructor(posX, posY) {
             super();
-            this.color = "#181818"
+            this.color = "#ffb0b0"
             this.size = {
-                x: 100,
-                y: 10
+                x: 50,
+                y: 20
             }
             this.setPosition(posX, posY)
         }
     }
 
-    class Box extends GameObject {
-        constructor(posX, posY) {
-            super();
-            this.color = "#43a8ff"
-            this.size = {
-                x: 40,
-                y: 40
-            }
-            this.setPosition(posX, posY)
-        }
-    }
+    // class Box extends GameObject {
+    //     constructor(posX, posY) {
+    //         super();
+    //         this.color = "#43a8ff"
+    //         this.size = {
+    //             x: 40,
+    //             y: 40
+    //         }
+    //         this.setPosition(posX, posY)
+    //     }
+    // }
 
-    class RoadObject extends GameObject {
-        constructor(posX, posY, sizeX, sizeY, color) {
-            super();
-            this.setPosition(posX, posY)
-            this.color = color
-            this.size = {
-                x: sizeX,
-                y: sizeY
-            }
-        }
-    }
+    // class RoadObject extends GameObject {
+    //     constructor(posX, posY, sizeX, sizeY, color) {
+    //         super();
+    //         this.setPosition(posX, posY)
+    //         this.color = color
+    //         this.size = {
+    //             x: sizeX,
+    //             y: sizeY
+    //         }
+    //     }
+    // }
 
     class Bullet extends GameObject {
         constructor(posX, posY) {
@@ -145,7 +147,7 @@
             this.setPosition(posX, posY)
             this.speed = 8
             this.radius = 10
-            this.color = "#000000"
+            this.color = "#9c6107"
         }
 
         getCollisionBox() {
@@ -171,7 +173,7 @@
 
     let start;
 
-    const player1 = new Player(100, 495)
+    const player1 = new Player(100, 570)
 
     const userInput = {
         directionX: 0,
@@ -277,10 +279,16 @@
 
     //let box = new Box(randomRoadX(), 100);
 
-    let obstacle = new Obstacle(randomRoadX(), -20);
+    //let obstacle = new Obstacle(randomRoadX(), -20);
 
-    let roadObjects = new Set();
-    const roadOffset = 50;
+    let enemies = new Set();
+
+    function addEnemiesWave(offset) {
+
+    }
+
+    //let roadObjects = new Set();
+    //const roadOffset = 50;
 
     let speed = 4
 
@@ -288,14 +296,14 @@
 
     let gameOver = false
 
-    for(let i = 0; i < 32; i++) {
-        const currentColor = i % 2 === 0 ? "#ee0000" : "#ffffff"
-        roadObjects.add(new RoadObject(roadOffset, i * 40, 40, 40, currentColor))
-        roadObjects.add(new RoadObject(canvas.width - roadOffset - 40, i * 40, 40, 40, currentColor))
-    }
-    for(let i = 0; i < 6; i++) {
-        roadObjects.add(new RoadObject(canvas.width / 2 - 8, i * 110, 16, 50, "#eeeeee"))
-    }
+    // for(let i = 0; i < 32; i++) {
+    //     const currentColor = i % 2 === 0 ? "#ee0000" : "#ffffff"
+    //     roadObjects.add(new RoadObject(roadOffset, i * 40, 40, 40, currentColor))
+    //     roadObjects.add(new RoadObject(canvas.width - roadOffset - 40, i * 40, 40, 40, currentColor))
+    // }
+    // for(let i = 0; i < 6; i++) {
+    //     roadObjects.add(new RoadObject(canvas.width / 2 - 8, i * 110, 16, 50, "#eeeeee"))
+    // }
 
     function updatePlayer(player) {
         if(userInput.isShooting) {
@@ -312,16 +320,16 @@
         ctx.drawImage(player.img, player.position.x, player.position.y)
     }
 
-    function updateRoad(speed) {
-        roadObjects.forEach(object => {
-            const newPosY = object.position.y > canvas.height ?
-                object.position.y - canvas.height - object.size.y : object.position.y
-            object.setPosition(object.setPosition(object.position.x, newPosY + speed))
-            ctx.beginPath()
-            ctx.fillStyle = object.color
-            ctx.fillRect(object.position.x, object.position.y, object.size.x, object.size.y)
-        })
-    }
+    // function updateRoad(speed) {
+    //     roadObjects.forEach(object => {
+    //         const newPosY = object.position.y > canvas.height ?
+    //             object.position.y - canvas.height - object.size.y : object.position.y
+    //         object.setPosition(object.setPosition(object.position.x, newPosY + speed))
+    //         ctx.beginPath()
+    //         ctx.fillStyle = object.color
+    //         ctx.fillRect(object.position.x, object.position.y, object.size.x, object.size.y)
+    //     })
+    // }
 
     // function updateSpeed(speed, minSpeed, maxSpeed, acceleration) {
     //     speed += acceleration * 0.05
@@ -344,7 +352,7 @@
 
     function updateScore(score) {
         ctx.font = "30px Arial"
-        ctx.fillStyle = "#000000"
+        ctx.fillStyle = "#d5d5d5"
         ctx.fillText(`Score: ${score}`, 10, 30)
     }
 
@@ -356,9 +364,9 @@
     function updateBullets(bullets) {
         bullets.forEach(bullet => {
             bullet.move()
-            if(isOverlapping(bullet.getCollisionBox(), obstacle) || isOverlapping(obstacle, bullet.getCollisionBox())) {
-                handleObstacleHit(bullet, obstacle)
-            }
+            // if(isOverlapping(bullet.getCollisionBox(), obstacle) || isOverlapping(obstacle, bullet.getCollisionBox())) {
+            //     //handleObstacleHit(bullet, obstacle)
+            // }
 
             ctx.beginPath()
             ctx.fillStyle = bullet.color
@@ -367,19 +375,20 @@
         })
     }
 
-    function handleObstacleHit(bullet) {
-        bullets.delete(bullet)
-        obstacle.setPosition(randomRoadX(), -obstacle.size.y)
-    }
-    let turn = false
+    // function handleObstacleHit(bullet) {
+    //     bullets.delete(bullet)
+    //     obstacle.setPosition(randomRoadX(), -obstacle.size.y)
+    // }
+    //let turn = false
 
-    function removeOldBullets() {
+    /*function removeOldBullets() {
         bullets.forEach(bullet => {
             if(bullet.position.y > 650) {
                 bullet.delete();
             }
         })
-    }
+    }*/
+
     let orientX = 0;
     let orientY = 0;
     function handleOrientation(event) {
@@ -404,9 +413,16 @@
     }
     permission();
 
+    function init() {
+        setInterval(() => {
+            console.log("Test");
+        }, 5000);
+    }
+
     function animate(timestamp) {
         if(start === undefined) {
             start = timestamp
+            init();
         }
         const elapsed = (timestamp - start);
         const elapsedSeconds = Math.floor(elapsed / 1000)
@@ -416,21 +432,23 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height)
             printGameOver(`GAME OVER! SCORE: ${score}`)
         } else {
-            if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true;
+            //if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.fillStyle = "#6bb635";
+            ctx.fillStyle = "#0a0f3d";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#8e8e8e";
-            ctx.fillStyle = "#8e8e8e";
-            ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height);
-            updateRoad(speed);
+            //ctx.beginPath();
+            // ctx.fillStyle = "#6bb635";
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillStyle = "#8e8e8e";
+            // ctx.fillStyle = "#8e8e8e";
+            //ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height);
+            //updateRoad(speed);
             //updateObstacle(obstacle, speed);
             //updateBox(box, speed);
             updateBullets(bullets);
             updatePlayer(player1);
             updateScore(score);
-            if(elapsedSeconds % 2) removeOldBullets();
+            //if(elapsedSeconds % 2) removeOldBullets();
             //printToScreen(`g:${orientY}\na:${orientX}`);
         }
         window.requestAnimationFrame(animate);
