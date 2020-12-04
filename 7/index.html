@@ -453,9 +453,15 @@
             }
         })
     }
+    let orientX = 0;
     let orientY = 0;
+    let test1 = 0;
+    let test2 = 0;
     function handleOrientation(event) {
+        orientX = event.beta;
         orientY = event.gamma;
+        test1 = event.acceleration.x;
+        test2 = event.acceleration.y;
     }
 
     function permission () {
@@ -504,7 +510,7 @@
             updatePlayer(player1);
             updateScore(score);
             if(elapsedSeconds % 2) removeOldBullets();
-            printToScreen(`r:${orientY}`);
+            printToScreen(`g:${orientY}\na:${orientX}`);
         }
         window.requestAnimationFrame(animate);
     }
