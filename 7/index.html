@@ -458,16 +458,22 @@
         orientY = event.gamma;
     }
 
-    function requestOrientationPermission(){
-        DeviceOrientationEvent.requestPermission()
-            .then(response => {
-                if (response === 'granted') {
-                    window.addEventListener('deviceorientation', handleOrientation, true);
-                }
-            })
-            .catch(console.error);
+    function permission () {
+        if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
+            // (optional) Do something before API request prompt.
+            DeviceMotionEvent.requestPermission()
+                .then( response => {
+                    // (optional) Do something after API prompt dismissed.
+                    if ( response === "granted" ) {
+                        window.addEventListener('deviceorientation', handleOrientation, true);
+                    }
+                })
+                .catch( console.error )
+        } else {
+            alert( "DeviceMotionEvent is not defined" );
+        }
     }
-    requestOrientationPermission();
+
 
     function animate(timestamp) {
         if(start === undefined) {
