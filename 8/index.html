@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=800">
+    <title>Title</title>
+</head>
+<style>
+    body, div {
+        margin: 0;
+        padding: 0;
+    }
+
+    button {
+        margin: auto;
+        padding: 20px;
+        min-width: 150px;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #bdbdbd;
+    }
+    .grid-item {
+        /*padding: 20px;*/
+        /*font-size: 30px;*/
+        text-align: center;
+    }
+</style>
+<body>
+<div>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <pre id="myConsole">test</pre>
+    <div class="grid-container">
+        <div class="grid-item">
+            <button
+                    onmousedown="turnLeft()"
+                    onmouseup="stopTurning()"
+                    ontouchstart="turnLeft()"
+                    ontouchend="stopTurning()"><</button>
+        </div>
+        <div class="grid-item">
+            <button ontouchstart="shoot()">SHOOT</button>
+        </div>
+        <div class="grid-item">
+            <button
+                    onmousedown="turnRight()"
+                    onmouseup="stopTurning()"
+                    ontouchstart="turnRight()"
+                    ontouchend="stopTurning()">></button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const myConsole = document.getElementById('myConsole');
+    printToScreen = (msg) => {
+        myConsole.innerHTML = msg;
+    }
+    // Prevent context menu on button press and hold activity
+    document.querySelectorAll('button').forEach(element => {
+        element.addEventListener('contextmenu', event => event.preventDefault());
+    });
+
+    class GameObject {
+        constructor() {
+            this.position = {
+                x: 0,
+                y: 0
+            }
+        }
+
+        setPosition(x, y) {
+            if(x !== undefined) this.position.x = x
+            if(y !== undefined) this.position.y = y
+        }
+    }
+
+    class Player extends GameObject {
+        constructor(posX, posY) {
+            super()
+            this.speed = 5
+            this.img = new Image()
+            this.img.src = "car.png"
+            this.size = {
+                x: 50,
+                y: 100
+            }
+            this.setPosition(posX, posY)
+        }
+
+        move(directionX, mapWidth) {
+            let clampedPositionX = Math.min(this.position.x + (this.speed * directionX), mapWidth - this.size.x)
+            clampedPositionX = Math.max(clampedPositionX, 0)
+            this.setPosition(clampedPositionX, this.position.y)
+        }
+
+        shoot(bullets) {
+            bullets.add(
+                new Bullet(this.position.x + (this.size.x / 2), this.position.y - (this.size.y / 2))
+            )
+        }
+    }
+
+    class Obstacle extends GameObject {
+        constructor(posX, posY) {
+            super();
+            this.color = "#181818"
+            this.size = {
+                x: 100,
+                y: 10
+            }
+            this.setPosition(posX, posY)
+        }
+    }
+
+    class Box extends GameObject {
+        constructor(posX, posY) {
+            super();
+            this.color = "#43a8ff"
+            this.size = {
+                x: 40,
+                y: 40
+            }
+            this.setPosition(posX, posY)
+        }
+    }
+
+    class RoadObject extends GameObject {
+        constructor(posX, posY, sizeX, sizeY, color) {
+            super();
+            this.setPosition(posX, posY)
+            this.color = color
+            this.size = {
+                x: sizeX,
+                y: sizeY
+            }
+        }
+    }
+
+    class Bullet extends GameObject {
+        constructor(posX, posY) {
+            super();
+            this.setPosition(posX, posY)
+            this.speed = 8
+            this.radius = 10
+            this.color = "#000000"
+        }
+
+        getCollisionBox() {
+            return {
+                position: {
+                    x: this.position.x,
+                    y: this.position.y
+                },
+                size: {
+                    x: this.radius * 2,
+                    y: this.radius * 2
+                }
+            }
+        }
+
+        move() {
+            this.setPosition(this.position.x, this.position.y - this.speed)
+        }
+    }
+
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+
+    let start;
+
+    const player1 = new Player(100, 495)
+
+    const userInput = {
+        directionX: 0,
+        acceleration: 0,
+        isShooting: false
+    }
+
+    const turnLeft = () => {
+        userInput.directionX = -1
+    }
+
+    const turnRight = () => {
+        userInput.directionX = 1
+    }
+
+    const stopTurning = () => {
+        userInput.directionX = 0
+    }
+
+    /*const accelerate = () => {
+        userInput.acceleration = 1
+    }
+
+    const stopAcceleration = () => {
+        userInput.acceleration = 0
+    }
+
+    const decelerate = () => {
+        userInput.acceleration = -1
+    }*/
+
+    const shoot = () => {
+        userInput.isShooting = true
+    }
+
+    const stopShooting = () => {
+        userInput.isShooting = false
+    }
+
+    //printToScreen("works");
+
+    const handleKeyDown = (event) => {
+        switch (event.key) {
+            case "ArrowRight": {
+                event.preventDefault()
+                turnRight()
+                break
+            }
+            case "ArrowLeft": {
+                event.preventDefault()
+                turnLeft()
+                break
+            }
+            case " ": {
+                event.preventDefault()
+                shoot()
+                break
+            }
+        }
+    }
+
+    const handleKeyUp = (event) => {
+        event.preventDefault();
+        switch (event.key) {
+            case "ArrowRight": {
+                stopTurning();
+                break;
+            }
+            case "ArrowLeft": {
+                stopTurning();
+                break;
+            }
+            case " ": {
+                stopShooting();
+                break;
+            }
+        }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    score = 0;
+
+    function isInRange(value, a, b) {
+        return value >= a && value <= b;
+    }
+
+    function isOverlapping(object, target) {
+        return (
+                isInRange(target.position.y, object.position.y, object.position.y + object.size.y) ||
+                isInRange(target.position.y + target.size.y, object.position.y, object.position.y + object.size.y)
+            ) &&
+            (
+                isInRange(target.position.x, object.position.x, object.position.x + object.size.x) ||
+                isInRange(target.position.x + target.size.x, object.position.x, object.position.x + object.size.x)
+            );
+    }
+
+    function randomRoadX() {
+        return Math.random() * (canvas.width - 125) + 25;
+    }
+
+    //let box = new Box(randomRoadX(), 100);
+
+    let obstacle = new Obstacle(randomRoadX(), -20);
+
+    let roadObjects = new Set();
+    const roadOffset = 50;
+
+    let speed = 4
+
+    bullets = new Set()
+
+    let gameOver = false
+
+    for(let i = 0; i < 32; i++) {
+        const currentColor = i % 2 === 0 ? "#ee0000" : "#ffffff"
+        roadObjects.add(new RoadObject(roadOffset, i * 40, 40, 40, currentColor))
+        roadObjects.add(new RoadObject(canvas.width - roadOffset - 40, i * 40, 40, 40, currentColor))
+    }
+    for(let i = 0; i < 6; i++) {
+        roadObjects.add(new RoadObject(canvas.width / 2 - 8, i * 110, 16, 50, "#eeeeee"))
+    }
+
+    function updatePlayer(player) {
+        if(userInput.isShooting) {
+            player.shoot(bullets)
+            stopShooting()
+        }
+
+        player.move(userInput.directionX, canvas.width)
+        if(orientY !== 0) {
+            player.move(Math.min(Math.max(orientY / 20, -1), 1), canvas.width)
+        }
+
+        ctx.beginPath()
+        ctx.drawImage(player.img, player.position.x, player.position.y)
+    }
+
+    function updateRoad(speed) {
+        roadObjects.forEach(object => {
+            const newPosY = object.position.y > canvas.height ?
+                object.position.y - canvas.height - object.size.y : object.position.y
+            object.setPosition(object.setPosition(object.position.x, newPosY + speed))
+            ctx.beginPath()
+            ctx.fillStyle = object.color
+            ctx.fillRect(object.position.x, object.position.y, object.size.x, object.size.y)
+        })
+    }
+
+    // function updateSpeed(speed, minSpeed, maxSpeed, acceleration) {
+    //     speed += acceleration * 0.05
+    //     return Math.min(Math.max(minSpeed, speed), maxSpeed)
+    // }
+
+    // function updateObstacle(obstacle, speed) {
+    //     if(isOverlapping(player1, obstacle) || isOverlapping(obstacle, player1)) {
+    //         gameOver = true
+    //     }
+    //     if(obstacle.position.y > canvas.height) {
+    //         obstacle.setPosition(randomRoadX(), -obstacle.size.y)
+    //     } else {
+    //         obstacle.setPosition(obstacle.position.x, obstacle.position.y + speed)
+    //     }
+    //     ctx.beginPath()
+    //     ctx.fillStyle = obstacle.color
+    //     ctx.fillRect(obstacle.position.x, obstacle.position.y, obstacle.size.x, obstacle.size.y)
+    // }
+
+    function updateScore(score) {
+        ctx.font = "30px Arial"
+        ctx.fillStyle = "#000000"
+        ctx.fillText(`Score: ${score}`, 10, 30)
+    }
+
+    function printGameOver(msg) {
+        ctx.font = "40px Arial"
+        ctx.strokeText(msg, canvas.width / 2 - 200, canvas.height / 2)
+    }
+
+    function updateBullets(bullets) {
+        bullets.forEach(bullet => {
+            bullet.move()
+            if(isOverlapping(bullet.getCollisionBox(), obstacle) || isOverlapping(obstacle, bullet.getCollisionBox())) {
+                handleObstacleHit(bullet, obstacle)
+            }
+
+            ctx.beginPath()
+            ctx.fillStyle = bullet.color
+            ctx.arc(bullet.position.x, bullet.position.y, bullet.radius, 0, 2 * Math.PI)
+            ctx.fill()
+        })
+    }
+
+    function handleObstacleHit(bullet) {
+        bullets.delete(bullet)
+        obstacle.setPosition(randomRoadX(), -obstacle.size.y)
+    }
+    let turn = false
+
+    function removeOldBullets() {
+        bullets.forEach(bullet => {
+            if(bullet.position.y > 650) {
+                bullet.delete();
+            }
+        })
+    }
+    let orientX = 0;
+    let orientY = 0;
+    function handleOrientation(event) {
+        orientX = event.beta;
+        orientY = event.gamma;
+    }
+
+    function permission () {
+        if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
+            // (optional) Do something before API request prompt.
+            DeviceMotionEvent.requestPermission()
+                .then( response => {
+                    // (optional) Do something after API prompt dismissed.
+                    if ( response === "granted" ) {
+                        window.addEventListener('deviceorientation', handleOrientation, true);
+                    }
+                })
+                .catch( console.error )
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+    }
+    permission();
+
+    function animate(timestamp) {
+        if(start === undefined) {
+            start = timestamp
+        }
+        const elapsed = (timestamp - start);
+        const elapsedSeconds = Math.floor(elapsed / 1000)
+        if(gameOver) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "#FF0000"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            printGameOver(`GAME OVER! SCORE: ${score}`)
+        } else {
+            if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.fillStyle = "#6bb635";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#8e8e8e";
+            ctx.fillStyle = "#8e8e8e";
+            ctx.fillRect(roadOffset, 0, canvas.width - roadOffset * 2, canvas.height);
+            updateRoad(speed);
+            //updateObstacle(obstacle, speed);
+            //updateBox(box, speed);
+            updateBullets(bullets);
+            updatePlayer(player1);
+            updateScore(score);
+            if(elapsedSeconds % 2) removeOldBullets();
+            //printToScreen(`g:${orientY}\na:${orientX}`);
+        }
+        window.requestAnimationFrame(animate);
+    }
+    window.requestAnimationFrame(animate);
+
+</script>
+</body>
+</html>
