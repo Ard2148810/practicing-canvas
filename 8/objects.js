@@ -75,7 +75,7 @@ class Bullet extends GameObject {
         this.setPosition(posX, posY)
         this.speed = {
             x: 0,
-            y: 8
+            y: 7
         }
         this.radius = 10
         this.color = "#9c6107"

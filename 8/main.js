@@ -231,7 +231,7 @@ function run() {
             if(permissionGranted) {
                 addTargetsWave(30);
             }
-        }, 1000 * 20);
+        }, 1000 * 15);
     }
 
     function updateTargets(targets) {
