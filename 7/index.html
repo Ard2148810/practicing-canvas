@@ -32,7 +32,11 @@
     <canvas id="myCanvas" width="800" height="600"></canvas>
     <pre id="myConsole">test</pre>
     <div class="grid-container">
-        <div class="grid-item"></div>
+        <div class="grid-item">
+            <button
+                    ontouchstart="permission();"
+            >Accelerator permission</button>
+        </div>
         <div class="grid-item">
             <button
                     ontouchstart="accelerate()"
@@ -69,7 +73,6 @@
         <div class="grid-item"></div>
     </div>
 </div>
-
 
 <script>
     const myConsole = document.getElementById('myConsole');
@@ -478,7 +481,6 @@
             window.addEventListener('deviceorientation', handleOrientation, true);
         }
     }
-    permission();
 
     function animate(timestamp) {
         if(start === undefined) {
