@@ -53,6 +53,7 @@ function run() {
     const shoot = () => {
         if(!permissionGranted) {
             permission();
+            permissionGranted = true;
         }
         userInput.isShooting = true
     }
