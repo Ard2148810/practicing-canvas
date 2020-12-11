@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=800, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=800">
     <title>Title</title>
 </head>
 <style>
@@ -260,6 +260,14 @@
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
+
+    const handleTouch = () => {
+        shoot();
+    }
+
+    canvas.addEventListener("touchstart", handleTouch, false);
+
+
 
     score = 0;
 
