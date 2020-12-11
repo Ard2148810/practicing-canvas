@@ -15,7 +15,7 @@ class GameObject {
 class Player extends GameObject {
     constructor(posX, posY) {
         super()
-        this.speed = 5
+        this.speed = 7
         this.img = new Image()
         this.img.src = "spaceship.png"
         this.size = {
@@ -38,6 +38,13 @@ class Player extends GameObject {
             );
         }
     }
+
+    getCenterPoint() {
+        return {
+            x: this.position.x + (this.size.x / 2),
+            y: this.position.y + (this.size.y / 2)
+        }
+    }
 }
 
 class Obstacle extends GameObject {
@@ -52,6 +59,13 @@ class Obstacle extends GameObject {
         }
         this.setPosition(posX, posY)
     }
+
+    getCenterPoint() {
+        return {
+            x: this.position.x + (this.size.x / 2),
+            y: this.position.y + (this.size.y / 2)
+        }
+    }
 }
 
 
@@ -65,6 +79,13 @@ class Bullet extends GameObject {
         }
         this.radius = 10
         this.color = "#9c6107"
+    }
+
+    getCenterPoint() {
+        return {
+            x: this.position.x + this.radius,
+            y: this.position.y + this.radius
+        }
     }
 
     getCollisionBox() {

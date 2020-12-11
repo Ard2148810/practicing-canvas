@@ -8,12 +8,25 @@ function run() {
         element.addEventListener('contextmenu', event => event.preventDefault());
     });
 
-
-
     let canvas = document.getElementById("myCanvas");
     let ctx = canvas.getContext("2d");
 
     let start;
+    let permissionGranted = false;
+
+    function permission() {
+        if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
+            DeviceMotionEvent.requestPermission()
+                .then(response => {
+                    if (response === "granted") {
+                        window.addEventListener('deviceorientation', handleOrientation, true);
+                    }
+                })
+                .catch(console.error)
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+    }
 
     const player1 = new Player(100, 570)
 
@@ -36,6 +49,9 @@ function run() {
     }
 
     const shoot = () => {
+        if(!permissionGranted) {
+            permission();
+        }
         userInput.isShooting = true
     }
 
@@ -109,10 +125,6 @@ function run() {
             );
     }
 
-    function randomRoadX() {
-        return Math.random() * (canvas.width - 125) + 25;
-    }
-
     let targets = new Set();
 
     function addTargetsWave(offset) {
@@ -159,13 +171,22 @@ function run() {
             bullet.move();
             targets.forEach(target => {
                 if (isOverlapping(bullet.getCollisionBox(), target) || isOverlapping(target, bullet.getCollisionBox())) {
-                    targets.delete(target)
+                    targets.delete(target);
                     score++;
+                    const bulletCenter = bullet.getCenterPoint();
+                    const targetCenter = target.getCenterPoint();
+                    if(Math.abs(bulletCenter.x - targetCenter.x) > target.size.x / 2 - 2)
+                        bullet.speed.y = -Math.abs(bullet.speed.y);
+                    else bullet.speed.x = -Math.abs(bullet.speed.x);
+
                 }
             });
 
             if (isOverlapping(bullet.getCollisionBox(), player1) || isOverlapping(player1, bullet.getCollisionBox())) {
                 bullet.speed.y = Math.abs(bullet.speed.y);
+                const playerX = player1.getCenterPoint().x;
+                const bulletX = bullet.getCenterPoint().x;
+                bullet.speed.x += (playerX - bulletX) / 8;
             }
 
             if (bullet.position.y > canvas.height) {
@@ -173,6 +194,12 @@ function run() {
             }
             if (bullet.position.y < 0) {
                 bullet.speed.y *= -1;
+            }
+
+            if (bullet.position.x < 0) {
+                bullet.speed.x *= -1;
+            } else if(bullet.position.x + (bullet.radius * 2) > canvas.width) {
+                bullet.speed.x *= -1;
             }
 
 
@@ -191,22 +218,6 @@ function run() {
         orientX = event.beta;
         orientY = event.gamma;
     }
-
-    function permission() {
-        if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
-            DeviceMotionEvent.requestPermission()
-                .then(response => {
-                    if (response === "granted") {
-                        window.addEventListener('deviceorientation', handleOrientation, true);
-                    }
-                })
-                .catch(console.error)
-        } else {
-            window.addEventListener('deviceorientation', handleOrientation, true);
-        }
-    }
-
-    permission();
 
     function init() {
         addTargetsWave(30);
