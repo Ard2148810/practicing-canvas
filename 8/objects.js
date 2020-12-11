@@ -19,7 +19,7 @@ class Player extends GameObject {
         this.img = new Image()
         this.img.src = "spaceship.png"
         this.size = {
-            x: 50,
+            x: 70,
             y: 10
         }
         this.setPosition(posX, posY)

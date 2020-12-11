@@ -131,6 +131,9 @@ function run() {
     let targets = new Set();
 
     function addTargetsWave(offset) {
+        targets.forEach(target => {
+            target.setPosition(target.position.x, target.position.y + target.size.y);
+        })
         for (let i = 0; i < 16; i++) {
             targets.add(new Obstacle(i * 50, offset));
         }
@@ -225,9 +228,10 @@ function run() {
     function init() {
         addTargetsWave(30);
         setInterval(() => {
-            console.log("Test");
-
-        }, 5000);
+            if(permissionGranted) {
+                addTargetsWave(30);
+            }
+        }, 1000 * 20);
     }
 
     function updateTargets(targets) {
@@ -250,6 +254,11 @@ function run() {
             ctx.fillRect(0, 0, canvas.width, canvas.height)
             printGameOver(`GAME OVER! SCORE: ${score}`)
         } else {
+            if(!permissionGranted) {
+                ctx.fillStyle = "#9dff6e"
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                printGameOver('TAP THE SCREEN TO START');
+            }
             //if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#0a0f3d";
