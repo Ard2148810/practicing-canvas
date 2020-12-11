@@ -28,6 +28,8 @@ function run() {
         }
     }
 
+    permission();
+
     const player1 = new Player(100, 570)
 
     const userInput = {
