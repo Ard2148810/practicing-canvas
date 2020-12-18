@@ -272,8 +272,8 @@ function run() {
                 }
             }
         } else {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
             ctx.fillStyle = "#3f4993"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
             printOnScreen('CLICK START BUTTON');
         }
         window.requestAnimationFrame(animate);
