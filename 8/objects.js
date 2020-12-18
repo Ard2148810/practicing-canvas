@@ -15,7 +15,7 @@ class GameObject {
 class Player extends GameObject {
     constructor(posX, posY) {
         super()
-        this.speed = 7
+        this.speed = 9
         this.img = new Image()
         this.img.src = "spaceship.png"
         this.size = {
