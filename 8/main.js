@@ -13,6 +13,7 @@ function run() {
 
     let start;
     let permissionGranted = false;
+    let gameStarted = false;
 
     function permission() {
         if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
@@ -51,10 +52,6 @@ function run() {
     }
 
     const shoot = () => {
-        if(!permissionGranted) {
-            permission();
-            permissionGranted = true;
-        }
         userInput.isShooting = true
     }
 
@@ -167,7 +164,7 @@ function run() {
         ctx.fillText(`Score: ${score}`, 10, 30)
     }
 
-    function printGameOver(msg) {
+    function printOnScreen(msg) {
         ctx.font = "40px Arial"
         ctx.strokeText(msg, canvas.width / 2 - 200, canvas.height / 2)
     }
@@ -228,9 +225,7 @@ function run() {
     function init() {
         addTargetsWave(30);
         setInterval(() => {
-            if(permissionGranted) {
-                addTargetsWave(30);
-            }
+            addTargetsWave(30);
         }, 1000 * 10);
     }
 
@@ -241,32 +236,45 @@ function run() {
         });
     }
 
+    function startGame() {
+        permission();
+        gameStarted = true;
+    }
+
+    const btnStart = document.getElementById("btnStart");
+    btnStart.addEventListener("click", startGame)
+    btnStart.addEventListener("touchstart", startGame)
+
+
     function animate(timestamp) {
-        if (start === undefined) {
-            start = timestamp
-            init();
-        }
-        const elapsed = (timestamp - start);
-        const elapsedSeconds = Math.floor(elapsed / 1000)
-        if (gameOver) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            ctx.fillStyle = "#FF0000"
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
-            printGameOver(`GAME OVER! SCORE: ${score}`)
-        } else {
-            if(!permissionGranted) {
-                ctx.fillStyle = "#9dff6e"
-                ctx.fillRect(0, 0, canvas.width, canvas.height)
-                printGameOver('TAP THE SCREEN TO START');
+        if(gameStarted) {
+            if (start === undefined) {
+                start = timestamp
+                init();
             }
-            //if(!turn && (elapsedSeconds + 12) % 15 === 0) turn = true;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0a0f3d";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            updateBullets(bullets);
-            updateTargets(targets);
-            updatePlayer(player1);
-            updateScore(score);
+            const elapsed = (timestamp - start);
+            const elapsedSeconds = Math.floor(elapsed / 1000)
+            if (gameOver) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                ctx.fillStyle = "#FF0000"
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                printOnScreen(`GAME OVER! SCORE: ${score}`)
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#0a0f3d";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                updateBullets(bullets);
+                updateTargets(targets);
+                updatePlayer(player1);
+                updateScore(score);
+                if(bullets.size === 0) {
+                    printOnScreen(`TAP or SPACE to start`)
+                }
+            }
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "#3f4993"
+            printOnScreen('CLICK START BUTTON');
         }
         window.requestAnimationFrame(animate);
     }
