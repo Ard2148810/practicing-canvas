@@ -57,6 +57,16 @@ function run() {
     btnStart.addEventListener("click", startGame)
     btnStart.addEventListener("touchstart", startGame)
 
+    function debugOrientation() {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + orientY, centerY + orientX);
+        ctx.stroke();
+    }
+
 
     function animate(timestamp) {
         if(gameStarted) {
@@ -76,6 +86,7 @@ function run() {
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
             printToScreen(`X: ${orientX}\nY: ${orientY}`);
+            debugOrientation();
         } else {
             ctx.fillStyle = "#3f4993"
             ctx.fillRect(0, 0, canvas.width, canvas.height)
