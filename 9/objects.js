@@ -32,7 +32,7 @@ class Player extends GameObject {
     }
 
     move(inputX, inputY, mapHeight, mapWidth, obstacles) {
-        const oldPos = this.position;
+        const oldPos = { x: this.position.x, y: this.position.y }
         const newX = inputX * this.accelerationMultiplier;
         const newY = inputY * this.accelerationMultiplier;
         this.speed.x += Math.max(Math.min(newX, this.maxAcceleration), -this.maxAcceleration);
@@ -46,8 +46,7 @@ class Player extends GameObject {
         );
         obstacles.forEach(obstacle => {
             if(this.boundingBox.isColliding(obstacle)) {
-                this.position = oldPos;
-                this.boundingBox.position = oldPos;
+                this.setPosition(oldPos.x, oldPos.y);
                 this.speed = {
                     x: 0,
                     y: 0

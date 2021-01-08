@@ -108,8 +108,40 @@ function run() {
         winZone.print(ctx);
     }
 
-    function updatePlayer() {
-        player.move(orientY, orientX, canvas.height, canvas.width, walls);
+    const input = {
+        x: 0,
+        y: 0
+    }
+
+    window.addEventListener('keydown' ,e => {
+        if(e.key === 'd') {
+            input.x = 4;
+        } else if(e.key === 'a') {
+            input.x = -4;
+        } else if(e.key === 'w') {
+            input.y = -4;
+        } else if(e.key === 's') {
+            input.y = 4;
+        }
+    });
+    window.addEventListener('keyup' ,e => {
+        if(e.key === 'd') {
+            input.x = 0;
+        } else if(e.key === 'a') {
+            input.x = 0;
+        } else if(e.key === 'w') {
+            input.y = 0;
+        } else if(e.key === 's') {
+            input.y = 0;
+        }
+    });
+
+    function updatePlayer(debug) {
+        if(debug) {
+            player.move(input.x, input.y, canvas.height, canvas.width, walls);
+        } else {
+            player.move(orientY, orientX, canvas.height, canvas.width, walls);
+        }
         player.print(ctx);
     }
 
@@ -149,11 +181,9 @@ function run() {
                 // debugCollision();
                 updateWalls();
                 updateWinZone();
-                updatePlayer();
+                updatePlayer(true);
 
                 checkWin();
-
-                addToConsole(`${orientation} | width: ${window.innerWidth}; height: ${window.innerHeight}`);
             }
             printToScreen(msgBuffer);
             msgBuffer = '';
