@@ -70,9 +70,14 @@ function run() {
 
     let player = null;
     let winZone = null;
+    const walls = new Set();
 
     function startGame() {
         permission();
+
+        walls.add(new Wall(200, 200, 100, 10));
+        walls.add(new Wall(350, 400, 10, 100));
+        walls.add(new Wall(700, 500, 100, 10));
 
         player = new Player(100, 100);
         winZone = new WinZone(500, 500);
@@ -119,6 +124,12 @@ function run() {
         winZone.print(ctx);
     }
 
+    function updateWalls() {
+        walls.forEach(wall => {
+            wall.print(ctx);
+        })
+    }
+
     function animate(timestamp) {
         if(gameStarted) {
             if (start === undefined) {
@@ -136,7 +147,7 @@ function run() {
                 ctx.fillStyle = "#0a0f3d";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 // debugCollision();
-                debugOrientation();
+                updateWalls();
                 updateWinZone();
                 updatePlayer();
                 checkWin();
