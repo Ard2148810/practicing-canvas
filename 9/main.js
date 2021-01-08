@@ -20,6 +20,16 @@ function run() {
         msgBuffer += msg;
     }
 
+    let orientation = 'portrait';
+    if(window.innerWidth > window.innerHeight) {
+        orientation = 'landscape';
+    }
+
+    window.addEventListener("orientationchange", function() {
+        // Announce the new orientation number
+        alert(window.orientation);
+    }, false);
+
     function permission() {
         if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
             DeviceMotionEvent.requestPermission()
@@ -47,8 +57,15 @@ function run() {
     let orientY = 0;
 
     function handleOrientation(event) {
-        orientX = event.beta;
-        orientY = event.gamma;
+        if(orientation === 'portrait') {
+            orientX = event.beta;
+            orientY = event.gamma;
+            addToConsole('\nportrait');
+        } else {
+            orientX = event.gamma;
+            orientY = event.beta;
+            addToConsole('\nlandscape');
+        }
     }
 
     let player = null;

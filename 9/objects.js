@@ -40,8 +40,8 @@ class Player extends GameObject {
         this.speed.y = Math.max(Math.min(this.speed.y, this.maxSpeed), -this.maxSpeed);
 
         this.setPosition(
-            Math.min(Math.max(this.position.x += this.speed.x, 0), mapWidth),
-            Math.min(Math.max(this.position.y += this.speed.y, 0), mapHeight)
+            Math.min(Math.max(this.position.x += this.speed.x, 0), mapWidth - this.size.x),
+            Math.min(Math.max(this.position.y += this.speed.y, 0), mapHeight - this.size.x)
         );
     }
 
