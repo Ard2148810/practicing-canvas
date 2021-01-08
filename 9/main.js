@@ -15,6 +15,11 @@ function run() {
 
     let gameStarted = false;
 
+    let msgBuffer = '';
+    const addToConsole = (msg) => {
+        msgBuffer += msg;
+    }
+
     function permission() {
         if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
             DeviceMotionEvent.requestPermission()
@@ -30,8 +35,6 @@ function run() {
     }
 
     permission();
-
-    printToScreen("...");
 
     let gameWin = false;
 
@@ -58,6 +61,7 @@ function run() {
     btnStart.addEventListener("touchstart", startGame)
 
     function debugOrientation() {
+        addToConsole(`\nX:${orientX}\nY:${orientY}`);
         ctx.beginPath();
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
@@ -66,6 +70,16 @@ function run() {
         ctx.strokeStyle = "#FF0000";
         ctx.lineWidth = 3;
         ctx.stroke();
+    }
+
+    function debugCollision() {
+        const player = new Player(100, 100);
+        const winZone = new WinZone(120, 120);
+
+        player.print(ctx);
+        winZone.print(ctx);
+        // player.printBoundingBox(ctx);
+        addToConsole(`\n${winZone.boundingBox.isColliding(player)}`);
     }
 
 
@@ -85,8 +99,11 @@ function run() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#0a0f3d";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+                debugCollision();
+                debugOrientation();
             }
-            printToScreen(`X: ${orientX}\nY: ${orientY}`);
+            printToScreen(msgBuffer);
+            msgBuffer = '';
             debugOrientation();
         } else {
             ctx.fillStyle = "#3f4993"
