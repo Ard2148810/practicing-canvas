@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=800">
+    <title>Title</title>
+</head>
+<style>
+    body, div {
+        margin: 0;
+        padding: 0;
+    }
+
+    button {
+        margin: auto;
+        padding: 20px;
+        min-width: 150px;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #bdbdbd;
+    }
+    .grid-item {
+        /*padding: 20px;*/
+        /*font-size: 30px;*/
+        text-align: center;
+    }
+</style>
+<body>
+
+
+<div>
+    <canvas id="myCanvas" width="800" height="600" style="width: 95vw; height: 80vh"></canvas>
+    <button id="btnStart">START</button>
+    <pre id="myConsole"></pre>
+    <div class="grid-container">
+    </div>
+</div>
+
+<script src="objects.js"></script>
+<script src="main.js"></script>
+
+<script>console.log('wtf')</script>
+</body>
+</html>
