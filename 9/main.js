@@ -31,34 +31,6 @@ function run() {
 
     permission();
 
-    //const player1 = new Player(100, 570)
-
-    const userInput = {
-        directionX: 0,
-        acceleration: 0,
-        isShooting: false
-    }
-
-    const turnLeft = () => {
-        userInput.directionX = -1
-    }
-
-    const turnRight = () => {
-        userInput.directionX = 1
-    }
-
-    const stopTurning = () => {
-        userInput.directionX = 0
-    }
-
-    const shoot = () => {
-        userInput.isShooting = true
-    }
-
-    const stopShooting = () => {
-        userInput.isShooting = false
-    }
-
     printToScreen("...");
 
     let gameWin = false;
