@@ -63,8 +63,8 @@ function run() {
             orientX = event.beta;
             orientY = event.gamma;
         } else {
-            orientX = event.gamma;
-            orientY = -event.alpha;
+            orientX = -event.gamma;
+            orientY = event.alpha;
         }
     }
 
