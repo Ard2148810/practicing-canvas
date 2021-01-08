@@ -109,7 +109,7 @@ function run() {
     }
 
     function updatePlayer() {
-        player.move(orientY, orientX, canvas.height, canvas.width);
+        player.move(orientY, orientX, canvas.height, canvas.width, walls);
         player.print(ctx);
     }
 
