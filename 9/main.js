@@ -58,12 +58,13 @@ function run() {
     btnStart.addEventListener("touchstart", startGame)
 
     function debugOrientation() {
-        ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(centerX + orientY, centerY + orientX);
+        ctx.strokeStyle = "#FF0000";
+        ctx.lineWidth = 3;
         ctx.stroke();
     }
 
