@@ -144,7 +144,7 @@ function run() {
                 printOnScreen(`YOU WIN!`);
             } else {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#0a0f3d";
+                ctx.fillStyle = "#a7b1ff";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 // debugCollision();
                 updateWalls();
