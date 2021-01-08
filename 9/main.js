@@ -90,7 +90,7 @@ function run() {
     }
 
     function updatePlayer() {
-        player.move(orientY, orientX, canvas.width, canvas.height);
+        player.move(orientY, orientX, canvas.height, canvas.width);
         player.print(ctx);
     }
 
