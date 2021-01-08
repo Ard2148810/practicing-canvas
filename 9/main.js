@@ -51,8 +51,15 @@ function run() {
         orientY = event.gamma;
     }
 
+    let player = null;
+    let winZone = null;
+
     function startGame() {
         permission();
+
+        player = new Player(100, 100);
+        winZone = new WinZone(500, 500);
+
         gameStarted = true;
     }
 
@@ -74,7 +81,7 @@ function run() {
 
     function debugCollision() {
         const player = new Player(100, 100);
-        const winZone = new WinZone(120, 120);
+        const winZone = new WinZone(119, 119);
 
         player.print(ctx);
         winZone.print(ctx);
@@ -82,6 +89,21 @@ function run() {
         addToConsole(`\n${winZone.boundingBox.isColliding(player)}`);
     }
 
+    function updatePlayer() {
+        player.move(orientY, orientX, canvas.width, canvas.height);
+        player.print(ctx);
+    }
+
+
+    function checkWin() {
+        if(player.boundingBox.isColliding(winZone)) {
+            gameWin = true;
+        }
+    }
+
+    function updateWinZone() {
+        winZone.print(ctx);
+    }
 
     function animate(timestamp) {
         if(gameStarted) {
@@ -99,8 +121,11 @@ function run() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#0a0f3d";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                debugCollision();
+                // debugCollision();
                 debugOrientation();
+                updateWinZone();
+                updatePlayer();
+                checkWin();
             }
             printToScreen(msgBuffer);
             msgBuffer = '';

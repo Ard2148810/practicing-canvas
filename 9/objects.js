@@ -15,20 +15,34 @@ class GameObject {
 class Player extends GameObject {
     constructor(posX, posY) {
         super();
-        this.speed = 5;
+        this.speed = {
+            x: 0,
+            y: 0
+        }
         this.size = {
             x: 20,
             y: 20
         };
+        this.maxSpeed = 8;
+        this.maxAcceleration = 3;
+        this.accelerationMultiplier = 0.1;
         this.color = "#FFFFFF";
         this.setPosition(posX, posY);
         this.boundingBox = new BoundingBox(this.position, this.size);
     }
 
-    move(directionX, mapWidth) {
-        let clampedPositionX = Math.min(this.position.x + (this.speed * directionX), mapWidth - this.size.x);
-        clampedPositionX = Math.max(clampedPositionX, 0);
-        this.setPosition(clampedPositionX, this.position.y);
+    move(inputX, inputY, mapHeight, mapWidth) {
+        const newX = inputX * this.accelerationMultiplier;
+        const newY = inputY * this.accelerationMultiplier;
+        this.speed.x += Math.max(Math.min(newX, this.maxAcceleration), -this.maxAcceleration);
+        this.speed.x = Math.max(Math.min(this.speed.x, this.maxSpeed), -this.maxSpeed);
+        this.speed.y += Math.max(Math.min(newY, this.maxAcceleration), -this.maxAcceleration);
+        this.speed.y = Math.max(Math.min(this.speed.y, this.maxSpeed), -this.maxSpeed);
+
+        this.setPosition(
+            Math.min(Math.max(this.position.x += this.speed.x, 0), mapWidth),
+            Math.min(Math.max(this.position.y += this.speed.y, 0), mapHeight)
+        );
     }
 
     print(ctx) {
@@ -76,6 +90,23 @@ class WinZone extends GameObject {
         };
         this.color = "#00e9ff"
         this.boundingBox = new BoundingBox(this.position, this.size);
+    }
+
+    print(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+    }
+}
+
+class Wall extends GameObject {
+    constructor(posX, posY, sizeX, sizeY) {
+        super();
+        this.setPosition(posX, posY);
+        this.size = {
+            x: sizeX,
+            y: sizeY
+        };
+        this.color = "#e0d866";
     }
 
     print(ctx) {
