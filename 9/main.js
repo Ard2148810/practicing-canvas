@@ -135,7 +135,7 @@ function run() {
                 updatePlayer();
                 checkWin();
 
-                addToConsole(`${orientation} | width: ${window.innerWidth}`)
+                addToConsole(`${orientation} | width: ${window.innerWidth}; height: ${window.innerHeight}`);
             }
             printToScreen(msgBuffer);
             msgBuffer = '';
