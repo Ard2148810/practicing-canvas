@@ -23,12 +23,8 @@ function run() {
     let orientation = 'portrait';
     if(window.innerWidth > window.innerHeight) {
         orientation = 'landscape';
-    }
 
-    window.addEventListener("orientationchange", function() {
-        // Announce the new orientation number
-        alert(window.orientation);
-    }, false);
+    }
 
     function permission() {
         if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
@@ -60,11 +56,9 @@ function run() {
         if(orientation === 'portrait') {
             orientX = event.beta;
             orientY = event.gamma;
-            addToConsole('\nportrait');
         } else {
             orientX = event.gamma;
             orientY = event.beta;
-            addToConsole('\nlandscape');
         }
     }
 
@@ -85,7 +79,6 @@ function run() {
     btnStart.addEventListener("touchstart", startGame)
 
     function debugOrientation() {
-        addToConsole(`\nX:${orientX}\nY:${orientY}`);
         ctx.beginPath();
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
@@ -141,6 +134,8 @@ function run() {
                 updateWinZone();
                 updatePlayer();
                 checkWin();
+
+                addToConsole(`${orientation} | width: ${window.innerWidth}`)
             }
             printToScreen(msgBuffer);
             msgBuffer = '';
