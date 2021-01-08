@@ -20,11 +20,17 @@ function run() {
         msgBuffer += msg;
     }
 
+
     let orientation = 'portrait';
     if(window.innerWidth > window.innerHeight) {
         orientation = 'landscape';
-
     }
+
+    window.onorientationchange = function(event) {
+        if(window.innerWidth > window.innerHeight) {
+            orientation = 'landscape';
+        }
+    };
 
     function permission() {
         if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
@@ -58,7 +64,7 @@ function run() {
             orientY = event.gamma;
         } else {
             orientX = event.gamma;
-            orientY = event.beta;
+            orientY = event.alpha;
         }
     }
 
