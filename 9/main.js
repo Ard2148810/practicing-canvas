@@ -150,6 +150,7 @@ function run() {
                 updateWalls();
                 updateWinZone();
                 updatePlayer();
+
                 checkWin();
 
                 addToConsole(`${orientation} | width: ${window.innerWidth}; height: ${window.innerHeight}`);
@@ -157,6 +158,8 @@ function run() {
             printToScreen(msgBuffer);
             msgBuffer = '';
             debugOrientation();
+
+
         } else {
             ctx.fillStyle = "#3f4993"
             ctx.fillRect(0, 0, canvas.width, canvas.height)

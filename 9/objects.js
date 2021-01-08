@@ -46,11 +46,13 @@ class Player extends GameObject {
         );
         obstacles.forEach(obstacle => {
             if(this.boundingBox.isColliding(obstacle)) {
-                this.setPosition(oldPos.x, oldPos.y);
+                this.position = oldPos;
+                this.boundingBox.position = oldPos;
                 this.speed = {
                     x: 0,
                     y: 0
                 }
+
             }
         })
     }
