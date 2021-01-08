@@ -25,7 +25,7 @@ class Player extends GameObject {
         };
         this.maxSpeed = 4;
         this.maxAcceleration = 2;
-        this.accelerationMultiplier = 0.05;
+        this.accelerationMultiplier = 0.01;
         this.color = "#FFFFFF";
         this.setPosition(posX, posY);
         this.boundingBox = new BoundingBox(this.position, this.size);

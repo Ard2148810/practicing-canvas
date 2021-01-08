@@ -102,8 +102,6 @@ function run() {
 
         player.print(ctx);
         winZone.print(ctx);
-        // player.printBoundingBox(ctx);
-        addToConsole(`\n${winZone.boundingBox.isColliding(player)}`);
     }
 
     function updatePlayer() {
