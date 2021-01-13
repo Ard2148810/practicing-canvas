@@ -270,7 +270,7 @@ function run() {
                 // debugCollision();
                 updateWalls();
                 updateWinZone();
-                updatePlayer(true);
+                updatePlayer(false);
 
                 checkWin();
             }
