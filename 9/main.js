@@ -168,9 +168,11 @@ function run() {
     }
 
     function startGame() {
-        permission();
-        generateMap();
-        gameStarted = true;
+        if(!gameStarted) {
+            permission();
+            generateMap();
+            gameStarted = true;
+        }
     }
 
     const btnStart = document.getElementById("btnStart");
