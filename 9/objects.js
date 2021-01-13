@@ -40,10 +40,23 @@ class Player extends GameObject {
         this.speed.y += Math.max(Math.min(newY, this.maxAcceleration), -this.maxAcceleration);
         this.speed.y = Math.max(Math.min(this.speed.y, this.maxSpeed), -this.maxSpeed);
 
+
         this.setPosition(
             Math.min(Math.max(this.position.x += this.speed.x, 0), mapWidth - this.size.x),
             Math.min(Math.max(this.position.y += this.speed.y, 0), mapHeight - this.size.x)
         );
+
+        if(this.position.x + this.size.x >= mapWidth) {
+            this.speed.x = 0;
+        } else if(this.position.x <= 0) {
+            this.speed.x = 0;
+        }
+        if(this.position.y + this.size.y >= mapHeight) {
+            this.speed.y = 0;
+        } else if(this.position.y <= 0) {
+            this.speed.y = 0;
+        }
+
         obstacles.forEach(obstacle => {
             if(this.boundingBox.isColliding(obstacle)) {
                 this.setPosition(oldPos.x, oldPos.y);

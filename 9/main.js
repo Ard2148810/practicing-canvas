@@ -139,9 +139,8 @@ function run() {
     function updatePlayer(debug) {
         if(debug) {
             player.move(input.x, input.y, canvas.height, canvas.width, walls);
-        } else {
-            player.move(orientY, orientX, canvas.height, canvas.width, walls);
         }
+        player.move(orientY, orientX, canvas.height, canvas.width, walls);
         player.print(ctx);
     }
 
